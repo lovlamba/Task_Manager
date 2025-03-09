@@ -33,72 +33,17 @@ struct HomeView: View {
                         .padding(.vertical)
                         
                         Spacer()
-                        
-                        Menu {
-                            ForEach(Sorting.allCases,id: \.self) { sortCase in
-                                Button(action: {
-                                    taskModel.sortOption = sortCase
-                                    taskModel.getAllTasks()
-                                }) {
-                                    HStack{
-                                        if taskModel.sortOption  == sortCase{
-                                            Image(systemName: "checkmark.circle.fill" )
-                                        }
-                                        Text(sortCase.rawValue)
-                                    }
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "arrow.up.and.down.text.horizontal")
-                        }
-                        .foregroundColor(.black)
+                        SortMenuView()
                     }
-                    
-                    CustomSegmentedBar()
+                    CustomSegmentedBarView()
                         .padding(.top,5)
                     
-                    LazyVStack(spacing: 20){
-                        ForEach(taskModel.tasks){ task in
-                            TaskCellView(task: task)
-                                .onTapGesture {
-                                    taskModel.selectedTask = task
-                                    navigationPath.append(.taskDetailView)
-                                }
-                        }
-                    }
-                    
-                    .padding(.top,20)
+                    TaskListView(navigationPath: $navigationPath)
                 }
                 .padding()
             }
             .overlay(alignment: .bottom) {
-                Button {
-                    taskModel.resetTask()
-                    navigationPath.append(.taskCreationView)
-                } label: {
-                    Label {
-                        Text("Add Task")
-                            .font(.callout)
-                            .fontWeight(.semibold)
-                    } icon: {
-                        Image(systemName: "plus.app.fill")
-                    }
-                    .foregroundColor(.white)
-                    .padding(.vertical,12)
-                    .padding(.horizontal)
-                    .background(.black,in: Capsule())
-                }
-                .padding(.top,10)
-                .frame(maxWidth: .infinity)
-                .background{
-                    LinearGradient(colors: [
-                        .white.opacity(0.05),
-                        .white.opacity(0.4),
-                        .white.opacity(0.7),
-                        .white
-                    ], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                }
+                AddTaskButtonView()
             }
             .navigationBarTitle("Task Manager")
             .navigationBarTitleDisplayMode(.inline)
@@ -117,7 +62,7 @@ struct HomeView: View {
     }
     
     @ViewBuilder
-    func CustomSegmentedBar()->some View{
+    func CustomSegmentedBarView()->some View{
         HStack(spacing: 0){
             ForEach(Tab.allCases,id: \.self){ tab in
                 Text(tab.rawValue)
@@ -142,6 +87,59 @@ struct HomeView: View {
                         }
                     }
             }
+        }
+    }
+    
+    @ViewBuilder
+    func SortMenuView()->some View{
+        Menu {
+            ForEach(Sorting.allCases,id: \.self) { sortCase in
+                Button(action: {
+                    taskModel.sortOption = sortCase
+                    taskModel.getAllTasks()
+                }) {
+                    HStack{
+                        if taskModel.sortOption  == sortCase{
+                            Image(systemName: "checkmark.circle.fill" )
+                        }
+                        Text(sortCase.rawValue)
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "arrow.up.and.down.text.horizontal")
+        }
+        .foregroundColor(.black)
+    }
+    
+    @ViewBuilder
+    func AddTaskButtonView()->some View{
+        Button {
+            taskModel.resetTask()
+            navigationPath.append(.taskCreationView)
+        } label: {
+            Label {
+                Text("Add Task")
+                    .font(.callout)
+                    .fontWeight(.semibold)
+            } icon: {
+                Image(systemName: "plus.app.fill")
+            }
+            .foregroundColor(.white)
+            .padding(.vertical,12)
+            .padding(.horizontal)
+            .background(.black,in: Capsule())
+        }
+        .padding(.top,10)
+        .frame(maxWidth: .infinity)
+        .background{
+            LinearGradient(colors: [
+                .white.opacity(0.05),
+                .white.opacity(0.4),
+                .white.opacity(0.7),
+                .white
+            ], startPoint: .top, endPoint: .bottom)
+            .ignoresSafeArea()
         }
     }
 }
