@@ -9,55 +9,71 @@ import SwiftUI
 import CoreData
 
 class TaskViewModel: ObservableObject {
-    @Published var currentTab: Tab = .all
+    @Published var tasks: [Task] = []
     @Published var taskTitle: String = ""
     @Published var taskDescription: String = ""
     @Published var taskColor: AccentColour = .yellow
     @Published var taskDeadline: Date = Date()
     @Published var taskType: Priority = .low
-    @Published var showDatePicker: Bool = false
     @Published var isTaskCompleted: Bool = false
-    @Published var editTask: Task?
+    let dataService = PersistenceController.shared
+    @Published var selectedTask: Task?
+    @Published var showDatePicker: Bool = false
+    @Published var currentTab: Tab = .all
+    @Published var sortOption: Sorting = .date
     
-    func addTask(context: NSManagedObjectContext)->Bool{
-        var task: Task!
-        if let editTask = editTask {
-            task = editTask
-        }else{
-            task = Task(context: context)
-        }
-        task.title = taskTitle
-        task.color = taskColor.rawValue
-        task.deadline = taskDeadline
-        task.type = taskType.rawValue
-        task.taskDescription = taskDescription
-        task.isCompleted = isTaskCompleted
-        
-        if let _ = try? context.save(){
-            return true
-        }
-        return false
+    init() {
+        getAllTasks()
     }
     
-    func resetTaskData(){
-        taskType = .low
-        taskColor = .yellow
+    func getAllTasks() {
+        tasks = dataService.read(currentTab: currentTab, sortOption: sortOption)
+    }
+    
+    func createTask() {
+        if let selectedTask = selectedTask {
+            self.updateTask(task: selectedTask)
+        }
+        else{
+            let entity = Task(context: dataService.container.viewContext)
+            self.updateTask(task: entity)
+        }
+    }
+    
+    func resetTask(){
         taskTitle = ""
         taskDescription = ""
+        taskColor = .yellow
         taskDeadline = Date()
+        taskType = .low
         isTaskCompleted = false
-        editTask = nil
+        selectedTask = nil
     }
     
-    func setupTask(){
-        if let editTask = editTask {
-            taskTitle = editTask.title ?? ""
-            taskType = Priority.getPriority(priority: editTask.type ?? "")
-            taskColor = AccentColour.getColour(colour: editTask.color ?? "")
-            taskDescription = editTask.taskDescription ?? ""
-            taskDeadline = editTask.deadline ?? Date()
-            isTaskCompleted = editTask.isCompleted
-        }
+    func updateTask(task: Task) {
+        task.color = taskColor.rawValue
+        task.deadline = taskDeadline
+        task.taskDescription = taskDescription
+        task.title = taskTitle
+        task.type = taskType.rawValue
+        task.isCompleted = isTaskCompleted
+        dataService.saveChanges()
+        self.resetTask()
+    }
+    
+    func setSelectedTask() {
+        taskColor = AccentColour.getColour(colour: selectedTask?.color ?? AccentColour.yellow.rawValue)
+        taskDeadline = selectedTask?.deadline ?? Date()
+        taskDescription = selectedTask?.taskDescription ?? ""
+        taskTitle = selectedTask?.title ?? ""
+        taskType = Priority.getPriority(priority: selectedTask?.type ?? Priority.low.rawValue)
+        isTaskCompleted = selectedTask?.isCompleted ?? false
+    }
+    
+    func deleteTask(Task: Task) {
+        dataService.container.viewContext.delete(Task)
+        dataService.saveChanges()
+        getAllTasks()
     }
 }
 

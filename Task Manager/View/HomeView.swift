@@ -1,11 +1,12 @@
-//
-//  HomeView.swift
-//  Task Manager
-//
-//  Created by Lov Lamba on 08/03/25.
-//
+    //
+    //  HomeView.swift
+    //  Task Manager
+    //
+    //  Created by Lov Lamba on 08/03/25.
+    //
 
 import SwiftUI
+import CoreData
 
 enum Route {
     case taskDetailView
@@ -16,10 +17,6 @@ struct HomeView: View {
     @StateObject var taskModel: TaskViewModel = .init()
     @State private var navigationPath: [Route] = []
     @Namespace var animation
-    @FetchRequest(entity: Task.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)], predicate: nil, animation: .easeInOut) var tasks: FetchedResults<Task>
-    @Environment(\.self) var env
-    @State var isNewTask: Bool = false
-    @State private var selectedSorting = Sorting.date
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -38,9 +35,17 @@ struct HomeView: View {
                         Spacer()
                         
                         Menu {
-                            Picker("Sort By", selection: $selectedSorting) {
-                                ForEach(Sorting.allCases,id: \.self) {
-                                    Text($0.rawValue)
+                            ForEach(Sorting.allCases,id: \.self) { sortCase in
+                                Button(action: {
+                                    taskModel.sortOption = sortCase
+                                    taskModel.getAllTasks()
+                                }) {
+                                    HStack{
+                                        if taskModel.sortOption  == sortCase{
+                                            Image(systemName: "checkmark.circle.fill" )
+                                        }
+                                        Text(sortCase.rawValue)
+                                    }
                                 }
                             }
                         } label: {
@@ -53,25 +58,22 @@ struct HomeView: View {
                         .padding(.top,5)
                     
                     LazyVStack(spacing: 20){
-                        TaskListView(currentTab: taskModel.currentTab, sortOption: self.selectedSorting) { (task: Task) in
+                        ForEach(taskModel.tasks){ task in
                             TaskCellView(task: task)
-                                .environmentObject(taskModel)
                                 .onTapGesture {
+                                    taskModel.selectedTask = task
                                     navigationPath.append(.taskDetailView)
-                                    taskModel.editTask = task
-                                    taskModel.setupTask()
-                                    self.isNewTask = false
                                 }
                         }
                     }
+                    
                     .padding(.top,20)
                 }
                 .padding()
             }
             .overlay(alignment: .bottom) {
                 Button {
-                    self.isNewTask = true
-                    taskModel.resetTaskData()
+                    taskModel.resetTask()
                     navigationPath.append(.taskCreationView)
                 } label: {
                     Label {
@@ -104,21 +106,20 @@ struct HomeView: View {
                 switch route {
                 case .taskDetailView :
                     TaskDetailView(navigationPath: $navigationPath)
-                        .environmentObject(taskModel)
                         .navigationBarBackButtonHidden()
                 case .taskCreationView :
                     TaskCreationView(navigationPath: $navigationPath)
-                        .environmentObject(taskModel)
                         .navigationBarBackButtonHidden()
                 }
             }
         }
+        .environmentObject(taskModel)
     }
     
     @ViewBuilder
     func CustomSegmentedBar()->some View{
         HStack(spacing: 0){
-            ForEach(Tab.allCases,id: \.self){tab in
+            ForEach(Tab.allCases,id: \.self){ tab in
                 Text(tab.rawValue)
                     .font(.callout)
                     .fontWeight(.semibold)
@@ -135,7 +136,10 @@ struct HomeView: View {
                     }
                     .contentShape(Capsule())
                     .onTapGesture {
-                        withAnimation{taskModel.currentTab = tab}
+                        withAnimation{
+                            taskModel.currentTab = tab
+                            taskModel.getAllTasks()
+                        }
                     }
             }
         }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TaskCellView: View {
     @EnvironmentObject var taskModel: TaskViewModel
-    @Environment(\.self) var env
     @State var task: Task
     
     var body: some View{
@@ -56,9 +55,8 @@ struct TaskCellView: View {
                 
                 if !task.isCompleted{
                     Button {
-                        task.isCompleted = true
                         taskModel.isTaskCompleted = true
-                        try? env.managedObjectContext.save()
+                        taskModel.updateTask(task: task)
                     } label: {
                         Circle()
                             .strokeBorder(.black,lineWidth: 1.5)

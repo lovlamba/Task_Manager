@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ColourSettingsView: View {
-    @ObservedObject var taskModel: TaskViewModel
+    @EnvironmentObject var taskModel: TaskViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -30,9 +30,7 @@ struct ColourSettingsView: View {
                         }
                         .contentShape(Circle())
                         .onTapGesture {
-                            if !taskModel.isTaskCompleted{
-                                taskModel.taskColor = color
-                            }
+                            taskModel.taskColor = color
                         }
                 }
             }

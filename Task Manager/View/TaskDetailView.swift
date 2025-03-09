@@ -10,7 +10,6 @@ import SwiftUI
 struct TaskDetailView: View {
     @EnvironmentObject var taskModel: TaskViewModel
     @Binding var navigationPath: [Route]
-    @Environment(\.self) var env
     @Namespace var animation
     
     var body: some View {
@@ -20,6 +19,7 @@ struct TaskDetailView: View {
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .leading) {
                     Button {
+                        taskModel.resetTask()
                         navigationPath.removeLast()
                     } label: {
                         Image(systemName: "arrow.left")
@@ -33,7 +33,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskColor.rawValue)
+                Text(taskModel.selectedTask?.color ?? "")
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)
@@ -49,10 +49,12 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskDeadline.formatted(date: .abbreviated, time: .omitted) + ", " + taskModel.taskDeadline.formatted(date: .omitted, time: .shortened))
-                    .font(.callout)
-                    .fontWeight(.semibold)
-                    .padding(.top,8)
+                if let deadline = taskModel.selectedTask?.deadline{
+                    Text(deadline.formatted(date: .abbreviated, time: .omitted) + ", " + deadline.formatted(date: .omitted, time: .shortened))
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .padding(.top,8)
+                }
             }
             .frame(maxWidth: .infinity,alignment: .leading)
             .padding(.top,10)
@@ -64,7 +66,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskTitle)
+                Text(taskModel.selectedTask?.title ?? "")
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)
@@ -79,7 +81,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskDescription)
+                Text(taskModel.selectedTask?.taskDescription ?? "")
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)
@@ -94,7 +96,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskType.rawValue)
+                Text(taskModel.selectedTask?.type ?? "")
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)
@@ -104,8 +106,9 @@ struct TaskDetailView: View {
             
             Divider()
             
-            if !taskModel.isTaskCompleted{
+            if !(taskModel.selectedTask?.isCompleted ?? false){
                 Button {
+                    taskModel.setSelectedTask()
                     navigationPath.append(.taskCreationView)
                 } label: {
                     Text("Update Task")

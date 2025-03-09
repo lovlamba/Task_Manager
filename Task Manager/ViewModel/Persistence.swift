@@ -48,6 +48,44 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
+    func saveChanges() {
+        let context = container.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("Could not save changes to Core Data.", error.localizedDescription)
+            }
+        }
+    }
+    
+    func read(currentTab: Tab, sortOption: Sorting) -> [Task] {
+        var results: [Task] = []
+        var predicate: NSPredicate!
+        if currentTab == Tab.pending{
+            predicate = NSPredicate(format: "isCompleted == false")
+        }else if currentTab == Tab.completed{
+            predicate = NSPredicate(format: "isCompleted == true")
+        }
+        var sort = NSSortDescriptor(key: #keyPath(Task.deadline), ascending: true)
+        if sortOption == Sorting.priority{
+            sort = NSSortDescriptor(key: #keyPath(Task.type), ascending: true)
+        }
+        else if sortOption == Sorting.title{
+            sort = NSSortDescriptor(key: #keyPath(Task.title), ascending: true)
+        }
+        let request = NSFetchRequest<Task>(entityName: "Task")
+        if let predicate_ = predicate{
+            request.predicate = predicate_
+        }
+        request.sortDescriptors = [sort]
+        do {
+            results = try container.viewContext.fetch(request)
+        } catch {
+            print("Could not fetch tasks from Core Data.")
+        }
+        return results
     }
 }

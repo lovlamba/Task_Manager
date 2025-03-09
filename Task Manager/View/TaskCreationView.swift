@@ -10,7 +10,6 @@ import SwiftUI
 struct TaskCreationView: View {
     @EnvironmentObject var taskModel: TaskViewModel
     @Binding var navigationPath: [Route]
-    @Environment(\.self) var env
     @Namespace var animation
     
     var body: some View {
@@ -28,7 +27,7 @@ struct TaskCreationView: View {
                     }
                 }
 
-            ColourSettingsView(taskModel: self.taskModel)
+            ColourSettingsView()
             
             Divider()
                 .padding(.vertical,10)
@@ -46,9 +45,7 @@ struct TaskCreationView: View {
             .frame(maxWidth: .infinity,alignment: .leading)
             .overlay(alignment: .bottomTrailing) {
                 Button {
-                    if !taskModel.isTaskCompleted{
-                        taskModel.showDatePicker.toggle()
-                    }
+                    taskModel.showDatePicker.toggle()
                 } label: {
                     Image(systemName: "calendar")
                         .foregroundColor(.black)
@@ -65,7 +62,6 @@ struct TaskCreationView: View {
                 TextField("", text: $taskModel.taskTitle)
                     .frame(maxWidth: .infinity)
                     .padding(.top,8)
-                    .disabled(taskModel.isTaskCompleted)
             }
             .padding(.top,10)
             
@@ -79,7 +75,6 @@ struct TaskCreationView: View {
                 TextField("", text: $taskModel.taskDescription)
                     .frame(maxWidth: .infinity)
                     .padding(.top,8)
-                    .disabled(taskModel.isTaskCompleted)
             }
             .padding(.top,10)
             
@@ -109,8 +104,8 @@ struct TaskCreationView: View {
                             }
                             .contentShape(Capsule())
                             .onTapGesture {
-                                if !taskModel.isTaskCompleted{
-                                    withAnimation{taskModel.taskType = type}
+                                withAnimation{
+                                    taskModel.taskType = type
                                 }
                             }
                     }
@@ -122,9 +117,8 @@ struct TaskCreationView: View {
             Divider()
             
             Button {
-                    if taskModel.addTask(context: env.managedObjectContext){
-                        navigationPath.removeAll()
-                    }
+                taskModel.createTask()
+                navigationPath.removeAll()
             } label: {
                 Text("Save Task")
                     .font(.callout)
@@ -166,9 +160,3 @@ struct TaskCreationView: View {
         }
     }
 }
-
-// if let editTast = taskModel.editTask{
-        //                                env.managedObjectContext.delete(editTast)
-        //                                try? env.managedObjectContext.save()
-        //                                env.dismiss()
-        //                            }
