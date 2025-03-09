@@ -1,9 +1,9 @@
-    //
-    //  ColourSettingsView.swift
-    //  Task Manager
-    //
-    //  Created by Lov Lamba on 09/03/25.
-    //
+//
+//  ColourSettingsView.swift
+//  Task Manager
+//
+//  Created by Lov Lamba on 09/03/25.
+//
 
 import SwiftUI
 
