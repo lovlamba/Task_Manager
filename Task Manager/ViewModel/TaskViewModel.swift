@@ -113,3 +113,9 @@ enum Priority: String, CaseIterable{
         }
     }
 }
+
+enum Sorting: String, CaseIterable{
+    case date = "Sort By Due Date"
+    case priority = "Sort By Priority"
+    case title = "Sort By Title"
+}

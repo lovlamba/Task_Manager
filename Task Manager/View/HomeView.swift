@@ -19,25 +19,41 @@ struct HomeView: View {
     @FetchRequest(entity: Task.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)], predicate: nil, animation: .easeInOut) var tasks: FetchedResults<Task>
     @Environment(\.self) var env
     @State var isNewTask: Bool = false
+    @State private var selectedSorting = Sorting.date
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Welcome User")
-                            .font(.callout)
-                        Text("Let's get things done!")
-                            .font(.title2.bold())
+                    HStack{
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Welcome User")
+                                .font(.callout)
+                            Text("Let's get things done!")
+                                .font(.title2.bold())
+                        }
+                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .padding(.vertical)
+                        
+                        Spacer()
+                        
+                        Menu {
+                            Picker("Sort By", selection: $selectedSorting) {
+                                ForEach(Sorting.allCases,id: \.self) {
+                                    Text($0.rawValue)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.and.down.text.horizontal")
+                        }
+                        .foregroundColor(.black)
                     }
-                    .frame(maxWidth: .infinity,alignment: .leading)
-                    .padding(.vertical)
                     
                     CustomSegmentedBar()
                         .padding(.top,5)
                     
                     LazyVStack(spacing: 20){
-                        TaskListView(currentTab: taskModel.currentTab) { (task: Task) in
+                        TaskListView(currentTab: taskModel.currentTab, sortOption: self.selectedSorting) { (task: Task) in
                             TaskCellView(task: task)
                                 .environmentObject(taskModel)
                                 .onTapGesture {
