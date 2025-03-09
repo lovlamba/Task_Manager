@@ -33,7 +33,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskColor)
+                Text(taskModel.taskColor.rawValue)
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)
@@ -94,7 +94,7 @@ struct TaskDetailView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
                 
-                Text(taskModel.taskType)
+                Text(taskModel.taskType.rawValue)
                     .font(.callout)
                     .fontWeight(.semibold)
                     .padding(.top,8)

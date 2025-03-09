@@ -101,10 +101,9 @@ struct HomeView: View {
     
     @ViewBuilder
     func CustomSegmentedBar()->some View{
-        let tabs = ["All","Completed","Pending"]
         HStack(spacing: 0){
-            ForEach(tabs,id: \.self){tab in
-                Text(tab)
+            ForEach(Tab.allCases,id: \.self){tab in
+                Text(tab.rawValue)
                     .font(.callout)
                     .fontWeight(.semibold)
                     .scaleEffect(0.9)

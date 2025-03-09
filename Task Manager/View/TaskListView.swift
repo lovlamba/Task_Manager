@@ -12,11 +12,11 @@ struct TaskListView<Content: View,T>: View where T: NSManagedObject {
     @FetchRequest var request: FetchedResults<T>
     let content: (T)->Content
     
-    init(currentTab: String,@ViewBuilder content: @escaping (T)->Content){
+    init(currentTab: Tab,@ViewBuilder content: @escaping (T)->Content){
         var predicate: NSPredicate!
-        if currentTab == "Pending"{
+        if currentTab.rawValue == "Pending"{
             predicate = NSPredicate(format: "isCompleted == false")
-        }else if currentTab == "Completed"{
+        }else if currentTab.rawValue == "Completed"{
             predicate = NSPredicate(format: "isCompleted == true")
         }
         _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.deadline, ascending: false)], predicate: predicate)

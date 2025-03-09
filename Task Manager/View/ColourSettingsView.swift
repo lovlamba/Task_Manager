@@ -16,12 +16,10 @@ struct ColourSettingsView: View {
                 .font(.caption)
                 .foregroundColor(.gray)
             
-            let colors: [String] = ["Yellow","Green","Blue","Purple","Red","Orange"]
-            
             HStack(spacing: 15){
-                ForEach(colors,id: \.self){color in
+                ForEach(AccentColour.allCases,id: \.self){color in
                     Circle()
-                        .fill(Color(color))
+                        .fill(Color(color.rawValue))
                         .frame(width: 25, height: 25)
                         .background{
                             if taskModel.taskColor == color{

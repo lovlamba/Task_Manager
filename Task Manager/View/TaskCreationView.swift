@@ -85,15 +85,14 @@ struct TaskCreationView: View {
             
             Divider()
             
-            let taskTypes: [String] = ["Low","Medium","High"]
             VStack(alignment: .leading, spacing: 12) {
                 Text("Priority")
                     .font(.caption)
                     .foregroundColor(.gray)
                 
                 HStack(spacing: 12){
-                    ForEach(taskTypes,id: \.self){type in
-                        Text(type)
+                    ForEach(Priority.allCases,id: \.self){type in
+                        Text(type.rawValue)
                             .font(.callout)
                             .padding(.vertical,8)
                             .frame(maxWidth: .infinity)
