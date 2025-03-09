@@ -9,9 +9,9 @@ import SwiftUI
 
 struct TaskDetailView: View {
     @EnvironmentObject var taskModel: TaskViewModel
+    @Binding var navigationPath: [Route]
     @Environment(\.self) var env
     @Namespace var animation
-    @State var isPresented: Bool = false
     
     var body: some View {
         VStack(spacing: 12){
@@ -20,8 +20,7 @@ struct TaskDetailView: View {
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .leading) {
                     Button {
-                        taskModel.openEditTask = false
-                        env.dismiss()
+                        navigationPath.removeLast()
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.title3)
@@ -107,7 +106,7 @@ struct TaskDetailView: View {
             
             if !taskModel.isTaskCompleted{
                 Button {
-                    self.isPresented = true
+                    navigationPath.append(.taskCreationView)
                 } label: {
                     Text("Update Task")
                         .font(.callout)
@@ -126,9 +125,5 @@ struct TaskDetailView: View {
         }
         .frame(maxHeight: .infinity,alignment: .top)
         .padding()
-        .fullScreenCover(isPresented: $isPresented){
-            TaskCreationView()
-                .environmentObject(taskModel)
-        }
     }
 }

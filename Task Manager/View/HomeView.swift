@@ -7,15 +7,21 @@
 
 import SwiftUI
 
+enum Route {
+    case taskDetailView
+    case taskCreationView
+}
+
 struct HomeView: View {
     @StateObject var taskModel: TaskViewModel = .init()
+    @State private var navigationPath: [Route] = []
     @Namespace var animation
     @FetchRequest(entity: Task.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)], predicate: nil, animation: .easeInOut) var tasks: FetchedResults<Task>
     @Environment(\.self) var env
     @State var isNewTask: Bool = false
     
     var body: some View {
-        NavigationView{
+        NavigationStack(path: $navigationPath) {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
                     VStack(alignment: .leading, spacing: 8) {
@@ -35,7 +41,7 @@ struct HomeView: View {
                             TaskCellView(task: task)
                                 .environmentObject(taskModel)
                                 .onTapGesture {
-                                    taskModel.openEditTask = true
+                                    navigationPath.append(.taskDetailView)
                                     taskModel.editTask = task
                                     taskModel.setupTask()
                                     self.isNewTask = false
@@ -48,9 +54,9 @@ struct HomeView: View {
             }
             .overlay(alignment: .bottom) {
                 Button {
-                    taskModel.openEditTask = true
                     self.isNewTask = true
                     taskModel.resetTaskData()
+                    navigationPath.append(.taskCreationView)
                 } label: {
                     Label {
                         Text("Add Task")
@@ -76,17 +82,20 @@ struct HomeView: View {
                     .ignoresSafeArea()
                 }
             }
-            .fullScreenCover(isPresented: $taskModel.openEditTask){
-                if isNewTask{
-                    TaskCreationView()
-                }
-                else{
-                    TaskDetailView()
-                }
-            }
-            .environmentObject(taskModel)
             .navigationBarTitle("Task Manager")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .taskDetailView :
+                    TaskDetailView(navigationPath: $navigationPath)
+                        .environmentObject(taskModel)
+                        .navigationBarBackButtonHidden()
+                case .taskCreationView :
+                    TaskCreationView(navigationPath: $navigationPath)
+                        .environmentObject(taskModel)
+                        .navigationBarBackButtonHidden()
+                }
+            }
         }
     }
     

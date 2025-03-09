@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TaskCreationView: View {
     @EnvironmentObject var taskModel: TaskViewModel
+    @Binding var navigationPath: [Route]
     @Environment(\.self) var env
     @Namespace var animation
     
@@ -19,7 +20,7 @@ struct TaskCreationView: View {
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .leading) {
                     Button {
-                        env.dismiss()
+                        navigationPath.removeLast()
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.title3)
@@ -123,8 +124,7 @@ struct TaskCreationView: View {
             
             Button {
                     if taskModel.addTask(context: env.managedObjectContext){
-                        taskModel.openEditTask = false
-                        env.dismiss()
+                        navigationPath.removeAll()
                     }
             } label: {
                 Text("Save Task")

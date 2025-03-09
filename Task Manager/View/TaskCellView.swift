@@ -26,18 +26,9 @@ struct TaskCellView: View {
                 
                 Spacer()
                 
-                if !task.isCompleted{
-                    Button {
-                        task.isCompleted = true
-                        taskModel.isTaskCompleted = true
-                        try? env.managedObjectContext.save()
-                    } label: {
-                        Circle()
-                            .strokeBorder(.black,lineWidth: 1.5)
-                            .frame(width: 25, height: 25)
-                            .contentShape(Circle())
-                    }
-                }
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.black)
+                
             }
             
             Text(task.title ?? "")
@@ -62,6 +53,19 @@ struct TaskCellView: View {
                     .font(.caption)
                 }
                 .frame(maxWidth: .infinity,alignment: .leading)
+                
+                if !task.isCompleted{
+                    Button {
+                        task.isCompleted = true
+                        taskModel.isTaskCompleted = true
+                        try? env.managedObjectContext.save()
+                    } label: {
+                        Circle()
+                            .strokeBorder(.black,lineWidth: 1.5)
+                            .frame(width: 25, height: 25)
+                            .contentShape(Circle())
+                    }
+                }
                 
             }
         }
