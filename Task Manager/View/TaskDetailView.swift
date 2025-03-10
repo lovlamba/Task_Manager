@@ -11,6 +11,7 @@ struct TaskDetailView: View {
     @EnvironmentObject var taskModel: TaskViewModel
     @Binding var navigationPath: [Route]
     @Namespace var animation
+    @Environment(\.colorScheme) var colorScheme
     @State var presentAlert: Bool = false
     
     var body: some View {
@@ -25,7 +26,7 @@ struct TaskDetailView: View {
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.title3)
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .light ? .black : .white)
                     }
                 }
                 .overlay(alignment: .trailing) {
@@ -88,11 +89,8 @@ struct TaskDetailView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical,12)
-                .foregroundColor(.white)
-                .background{
-                    Capsule()
-                        .fill(.black)
-                }
+                .foregroundColor(colorScheme == .dark ? .black : .white)
+                .background(colorScheme == .dark ? .white : .black,in: Capsule())
         }
         .frame(maxHeight: .infinity,alignment: .bottom)
         .padding(.bottom,10)

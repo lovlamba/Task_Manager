@@ -11,6 +11,7 @@ struct TaskCreationView: View {
     @EnvironmentObject var taskModel: TaskViewModel
     @Binding var navigationPath: [Route]
     @Namespace var animation
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(spacing: 12){
@@ -23,7 +24,7 @@ struct TaskCreationView: View {
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.title3)
-                            .foregroundColor(.black)
+                            .foregroundColor(colorScheme == .light ? .black : .white)
                     }
                 }
             
@@ -66,7 +67,7 @@ struct TaskCreationView: View {
                         .datePickerStyle(.graphical)
                         .labelsHidden()
                         .padding()
-                        .background(.white,in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .background(colorScheme == .dark ? .black : .white,in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                         .padding()
                 }
             }
@@ -92,7 +93,7 @@ struct TaskCreationView: View {
                 taskModel.showDatePicker.toggle()
             } label: {
                 Image(systemName: "calendar")
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .light ? .black : .white)
             }
         }
     }
@@ -110,15 +111,15 @@ struct TaskCreationView: View {
                         .font(.callout)
                         .padding(.vertical,8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(taskModel.taskType == type ? .white : .black)
+                        .foregroundColor(taskModel.taskType == type ? (colorScheme == .dark ? .black : .white) : (colorScheme == .dark ? .white : .black))
                         .background{
                             if taskModel.taskType == type{
                                 Capsule()
-                                    .fill(.black)
+                                    .fill(colorScheme == .dark ? .white : .black)
                                     .matchedGeometryEffect(id: "TYPE", in: animation)
                             }else{
                                 Capsule()
-                                    .strokeBorder(.black)
+                                    .strokeBorder(colorScheme == .dark ? .white : .black)
                             }
                         }
                         .contentShape(Capsule())
@@ -145,11 +146,8 @@ struct TaskCreationView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical,12)
-                .foregroundColor(.white)
-                .background{
-                    Capsule()
-                        .fill(.black)
-                }
+                .foregroundColor(colorScheme == .dark ? .black : .white)
+                .background(colorScheme == .dark ? .white : .black,in: Capsule())
         }
         .frame(maxHeight: .infinity,alignment: .bottom)
         .padding(.bottom,10)

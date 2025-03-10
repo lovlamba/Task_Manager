@@ -17,6 +17,7 @@ struct HomeView: View {
     @StateObject var taskModel: TaskViewModel = .init()
     @State private var navigationPath: [Route] = []
     @Namespace var animation
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -69,13 +70,13 @@ struct HomeView: View {
                     .font(.callout)
                     .fontWeight(.semibold)
                     .scaleEffect(0.9)
-                    .foregroundColor(taskModel.currentTab == tab ? .white : .black)
+                    .foregroundColor(taskModel.currentTab == tab ? (colorScheme == .dark ? .black : .white) : (colorScheme == .dark ? .white : .black))
                     .padding(.vertical,6)
                     .frame(maxWidth: .infinity)
                     .background{
                         if taskModel.currentTab == tab{
                             Capsule()
-                                .fill(.black)
+                                .fill(colorScheme == .dark ? .white : .black)
                                 .matchedGeometryEffect(id: "TAB", in: animation)
                         }
                     }
@@ -97,10 +98,10 @@ struct HomeView: View {
                 Button(action: {
                     taskModel.sortOption = sortCase
                     taskModel.getAllTasks()
-                }) {
+                }){
                     HStack{
                         if taskModel.sortOption  == sortCase{
-                            Image(systemName: "checkmark.circle.fill" )
+                            Image(systemName: "checkmark" )
                         }
                         Text(sortCase.rawValue)
                     }
@@ -108,6 +109,7 @@ struct HomeView: View {
             }
         } label: {
             Image(systemName: "arrow.up.and.down.text.horizontal")
+                .foregroundColor(colorScheme == .dark ? .white : .black)
         }
         .foregroundColor(.black)
     }
@@ -125,19 +127,19 @@ struct HomeView: View {
             } icon: {
                 Image(systemName: "plus.app.fill")
             }
-            .foregroundColor(.white)
+            .foregroundColor(colorScheme == .dark ? .black : .white)
             .padding(.vertical,12)
             .padding(.horizontal)
-            .background(.black,in: Capsule())
+            .background(colorScheme == .dark ? .white : .black,in: Capsule())
         }
         .padding(.top,10)
         .frame(maxWidth: .infinity)
         .background{
             LinearGradient(colors: [
-                .white.opacity(0.05),
-                .white.opacity(0.4),
-                .white.opacity(0.7),
-                .white
+                (colorScheme == .dark ? .black.opacity(0.05) : .white.opacity(0.05)),
+                (colorScheme == .dark ? .black.opacity(0.04) : .white.opacity(0.04)),
+                (colorScheme == .dark ? .black.opacity(0.07) : .white.opacity(0.07)),
+                (colorScheme == .dark ? .black : .white)
             ], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea()
         }

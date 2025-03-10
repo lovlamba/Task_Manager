@@ -59,6 +59,7 @@ class TaskViewModel: ObservableObject {
         task.isCompleted = isTaskCompleted
         dataService.saveChanges()
         self.resetTask()
+        self.getAllTasks()
     }
     
     func setSelectedTask() {

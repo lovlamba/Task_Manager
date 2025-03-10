@@ -58,7 +58,6 @@ struct TaskListView: View {
                                 taskModel.setSelectedTask()
                                 taskModel.isTaskCompleted = true
                                 taskModel.updateTask(task: task)
-                                taskModel.getAllTasks()
                             } label: {
                                 Circle()
                                     .strokeBorder(.black,lineWidth: 1.5)
@@ -68,6 +67,7 @@ struct TaskListView: View {
                         }
                     }
                 }
+                .foregroundColor(.black)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background{
