@@ -19,6 +19,7 @@ struct HomeView: View {
     @Namespace var animation
     @Environment(\.colorScheme) var colorScheme
     @State private var isScaleChange = false
+    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore = false
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -63,6 +64,20 @@ struct HomeView: View {
             }
         }
         .environmentObject(taskModel)
+        .onAppear{
+            if !hasLaunchedBefore && taskModel.tasks.isEmpty{
+                for count in 0..<5{
+                    taskModel.taskTitle = "Task" + "\(count)"
+                    taskModel.taskDescription = "Description" + "\(count)"
+                    taskModel.taskDeadline = Date.now
+                    taskModel.taskType = count == 0 || count == 3 ? .low : (count == 2 ? .medium : .high)
+                    taskModel.taskColor = AccentColour.allCases[count]
+                    taskModel.isTaskCompleted = count == 0 || count == 3 || count == 4 ? false : true
+                    taskModel.createTask()
+                }
+            }
+            hasLaunchedBefore = true
+        }
     }
     
     @ViewBuilder
