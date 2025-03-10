@@ -18,6 +18,7 @@ struct HomeView: View {
     @State private var navigationPath: [Route] = []
     @Namespace var animation
     @Environment(\.colorScheme) var colorScheme
+    @State private var isScaleChange = false
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -53,9 +54,13 @@ struct HomeView: View {
                 case .taskDetailView :
                     TaskDetailView(navigationPath: $navigationPath)
                         .navigationBarBackButtonHidden()
+                        .scaleEffect(isScaleChange ? 0.5 : 1)
+                        .animation(.spring(response: 1, dampingFraction: 0.5, blendDuration: 100.0))
                 case .taskCreationView :
                     TaskCreationView(navigationPath: $navigationPath)
                         .navigationBarBackButtonHidden()
+                        .scaleEffect(isScaleChange ? 0.5 : 1)
+                        .animation(.spring(response: 1, dampingFraction: 0.5, blendDuration: 100.0))
                 }
             }
         }
