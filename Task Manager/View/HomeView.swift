@@ -69,7 +69,7 @@ struct HomeView: View {
                 for count in 0..<5{
                     taskModel.taskTitle = "Task" + "\(count)"
                     taskModel.taskDescription = "Description" + "\(count)"
-                    taskModel.taskDeadline = Date.now
+                    taskModel.taskDeadline = Calendar.current.date(byAdding: .day, value: count, to: Date.now) ?? Date()
                     taskModel.taskType = count == 0 || count == 3 ? .low : (count == 2 ? .medium : .high)
                     taskModel.taskColor = AccentColour.allCases[count]
                     taskModel.isTaskCompleted = count == 0 || count == 3 || count == 4 ? false : true
