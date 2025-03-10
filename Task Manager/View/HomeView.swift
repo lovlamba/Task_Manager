@@ -59,8 +59,6 @@ struct HomeView: View {
                 case .taskCreationView :
                     TaskCreationView(navigationPath: $navigationPath)
                         .navigationBarBackButtonHidden()
-                        .scaleEffect(isScaleChange ? 0.5 : 1)
-                        .animation(.spring(response: 1, dampingFraction: 0.5, blendDuration: 100.0))
                 }
             }
         }
