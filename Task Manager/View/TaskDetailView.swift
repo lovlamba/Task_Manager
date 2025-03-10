@@ -11,6 +11,7 @@ struct TaskDetailView: View {
     @EnvironmentObject var taskModel: TaskViewModel
     @Binding var navigationPath: [Route]
     @Namespace var animation
+    @State var presentAlert: Bool = false
     
     var body: some View {
         VStack(spacing: 12){
@@ -25,6 +26,15 @@ struct TaskDetailView: View {
                         Image(systemName: "arrow.left")
                             .font(.title3)
                             .foregroundColor(.black)
+                    }
+                }
+                .overlay(alignment: .trailing) {
+                    Button {
+                        self.presentAlert = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .font(.title3)
+                            .foregroundColor(.red)
                     }
                 }
             
@@ -55,6 +65,16 @@ struct TaskDetailView: View {
         }
         .frame(maxHeight: .infinity,alignment: .top)
         .padding()
+        .alert(isPresented: $presentAlert) {
+            Alert(title: Text("Confirm Deletion"),
+                  message: Text("Are you sure you want to delete this task ?"),
+                  primaryButton: .destructive(Text("Delete")) {
+                if let selectedTask_ = taskModel.selectedTask {
+                    taskModel.deleteTask(Task: selectedTask_)
+                    navigationPath.removeLast()
+                }
+            }, secondaryButton: .cancel())
+        }
     }
     
     @ViewBuilder
