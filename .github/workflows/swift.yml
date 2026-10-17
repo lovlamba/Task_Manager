@@ -47,7 +47,7 @@ jobs:
           set -o pipefail
 
           SCHEME='Task ManagerTests'
-          DESTINATION='platform=iOS Simulator,OS=26.4,name=iPad (A16),arch=arm64'
+          DESTINATION='platform=iOS Simulator,OS=26.4.1,name=iPad (A16),arch=arm64'
 
           xcodebuild test \
             -scheme "$SCHEME" \
