@@ -38,5 +38,5 @@ struct ColourSettingsView: View {
         }
         .frame(maxWidth: .infinity,alignment: .leading)
         .padding(.top,30)
-    }
+    } 
 }
