@@ -1,13 +1,10 @@
-# This workflow will build a Swift project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
-
 name: Swift
 
 on:
   push:
     branches:
       - main
-       
+
   pull_request:
     branches:
       - main
@@ -20,10 +17,13 @@ jobs:
   test:
     name: Run Tests
     runs-on: macos-26
+
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     environment:
-      name: 'DEV'
+      name: DEV
+
     steps:
       - uses: actions/checkout@v6
 
@@ -39,10 +39,19 @@ jobs:
       - name: Show current version of Xcode
         run: xcodebuild -version
 
+      - name: List available simulators
+        run: xcrun simctl list devices
+
       - name: Run tests
         run: |
           set -o pipefail
-          SCHEME='ExpressRegTests'
-          DESTINATION='platform=iOS Simulator,OS=26.4,name=iPad (A16),arch=arm64'
-          xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination "$DESTINATION" -skip-testing ExpressRegUITests | xcpretty
 
+          SCHEME='Task ManagerTests'
+          DESTINATION='platform=iOS Simulator,OS=26.4,name=iPad (A16),arch=arm64'
+
+          xcodebuild test \
+            -scheme "$SCHEME" \
+            -sdk iphonesimulator \
+            -destination "$DESTINATION" \
+            -skip-testing "Task ManagerUITests" \
+            | xcpretty
