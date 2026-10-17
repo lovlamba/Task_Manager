@@ -5,18 +5,44 @@ name: Swift
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+       
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-
-    runs-on: macos-latest
-
+  test:
+    name: Run Tests
+    runs-on: macos-26
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    environment:
+      name: 'DEV'
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - uses: actions/checkout@v6
+
+      - name: Install xcpretty
+        run: gem install xcpretty
+
+      - name: List available Xcode versions
+        run: ls /Applications | grep Xcode
+
+      - name: Set up Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
+
+      - name: Show current version of Xcode
+        run: xcodebuild -version
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          SCHEME='ExpressRegTests'
+          DESTINATION='platform=iOS Simulator,OS=26.4,name=iPad (A16),arch=arm64'
+          xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination "$DESTINATION" -skip-testing ExpressRegUITests | xcpretty
+
