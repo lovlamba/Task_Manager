@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430F27BC307635690081553E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 430F27AE307635690081553E /* Assets.xcassets */; };
 		430F27C4307635E30081553E /* icons.png in Resources */ = {isa = PBXBuildFile; fileRef = 430F27C3307635E30081553E /* icons.png */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		430F27AE307635690081553E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		430F27C3307635E30081553E /* icons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icons.png; sourceTree = "<group>"; };
 		43CBE2432D7C635800BF7685 /* Task Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Task Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CBE2592D7C635A00BF7685 /* Task ManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Task ManagerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				430F27C3307635E30081553E /* icons.png */,
+				430F27AE307635690081553E /* Assets.xcassets */,
 				43CBE2452D7C635800BF7685 /* Task Manager */,
 				43CBE25C2D7C635A00BF7685 /* Task ManagerTests */,
 				43CBE2662D7C635A00BF7685 /* Task ManagerUITests */,
@@ -219,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430F27C4307635E30081553E /* icons.png in Resources */,
+				430F27BC307635690081553E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
